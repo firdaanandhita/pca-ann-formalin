@@ -2,25 +2,31 @@
 
 Implementation of a **Principal Component Analysis (PCA)** and **Artificial Neural Network (ANN)** pipeline for formalin detection using Electronic Nose (E-Nose) sensor data.
 
-This repository contains the complete workflow from raw sensor preprocessing, feature extraction, model training, evaluation, deployment validation, and Raspberry Pi inference.
+This repository contains the source code implementing the complete software workflow, including raw sensor preprocessing, feature extraction, model training, prediction, deployment validation, and Raspberry Pi inference.
 
-> **Status:** Research Implementation (Workflow 25 Experiments)
+> **Status:** Public source code repository accompanying an academic research project.
+
+---
+
+# Repository Scope
+
+This repository contains the software implementation of the PCA–ANN pipeline for formalin detection using Electronic Nose sensor data.
+
+To keep the repository focused on the software implementation, **research datasets, trained model artifacts, and experimental outputs are intentionally excluded**. The methodology, experimental results, and performance evaluation are documented separately in the associated thesis and supporting research documents.
 
 ---
 
 # Overview
 
-This project implements an end-to-end machine learning pipeline for formalin detection using Electronic Nose measurements.
-
-The workflow includes:
+The implemented software performs an end-to-end machine learning workflow consisting of:
 
 - Raw sensor preprocessing
 - Baseline and exposure segmentation
 - 13-feature extraction
 - Missing value imputation
 - Z-score normalization
-- Principal Component Analysis (3 components)
-- Artificial Neural Network classification
+- Principal Component Analysis (PCA)
+- Artificial Neural Network (ANN) classification
 - Leave-One-Replication-Out Cross Validation
 - Final model training
 - Deployment validation
@@ -31,65 +37,22 @@ The workflow includes:
 # Repository Structure
 
 ```text
-PCA_ANN_All25/
+pca-ann-formalin/
+│
+├── src/
+│   ├── pca_ann_pipeline.py
+│   ├── train_all25.py
+│   ├── predict_raw.py
+│   └── raspi_predict_excel.py
+│
+├── validation/
+│   └── deployment_validation.py
 │
 ├── README.md
-├── ALL25_RESULTS.md
 ├── requirements.txt
 ├── requirements-raspi.txt
-│
-├── train_all25.py
-├── pca_ann_pipeline.py
-├── predict_raw.py
-├── deployment_validation.py
-├── seed_stability_analysis.py
-├── raspi_predict_excel.py
-│
-├── data/
-│   └── Data Validasi & Pengujian (1).xlsx
-│
-├── models/
-│   ├── model_pca_ann.pkl
-│   ├── model_pca_ann.joblib
-│   ├── model_ann_13_fitur.pkl
-│   └── model_ann_13_fitur.joblib
-│
-├── results/
-│   ├── metrics_summary.csv
-│   ├── fold_metrics.csv
-│   ├── pca_scores.csv
-│   ├── pca_loadings.csv
-│   ├── pca_explained_variance.csv
-│   ├── confusion_matrices.png
-│   ├── deployment_tests/
-│   └── ...
-│
-└── tests/
-    ├── test_dataset_integration.py
-    ├── test_deployment_artifact.py
-    └── test_pca_ann_pipeline.py
+└── .gitignore
 ```
-
----
-
-# Methodological Notes
-
-This repository corresponds to the **all-25 experiment** workflow.
-
-The pipeline uses:
-
-```python
-short_window_policy = "keep"
-```
-
-This policy retains all 25 experiments, including samples with quality-control warnings.
-
-Quality Control Summary:
-
-- QC OK : 23 samples
-- QC Warning : 2 samples
-
-Warnings remain recorded inside the generated feature table and are **not hidden** from subsequent analysis.
 
 ---
 
@@ -108,7 +71,7 @@ Baseline & Exposure Segmentation
 13 Feature Extraction
         │
         ▼
-Median Imputer
+Median Imputation
         │
         ▼
 Z-score Standardization
@@ -129,6 +92,9 @@ Final Model Training
         │
         ▼
 Deployment Validation
+        │
+        ▼
+Prediction
 ```
 
 ---
@@ -159,13 +125,13 @@ python3.10 -m venv .venv
 
 # Training
 
-Run the complete workflow:
+Run the complete training workflow:
 
 ```bash
-python train_all25.py
+python src/train_all25.py
 ```
 
-The script automatically performs:
+The training workflow performs:
 
 - Data preprocessing
 - Feature extraction
@@ -173,84 +139,80 @@ The script automatically performs:
 - ANN training
 - Cross-validation
 - Final model generation
-- Seed stability analysis
-- Deployment validation
+
+---
+
+# Prediction
+
+Run prediction using the trained PCA–ANN model:
+
+```bash
+python src/predict_raw.py
+```
+
+The prediction pipeline automatically:
+
+- Loads the trained model
+- Performs preprocessing
+- Extracts 13 features
+- Applies PCA transformation
+- Executes ANN inference
+- Produces prediction results
 
 ---
 
 # Deployment Validation
 
-Run:
+Run the deployment validation workflow:
 
 ```bash
-python deployment_validation.py
+python validation/deployment_validation.py
 ```
 
-Validation includes:
+The validation includes:
 
+- Model loading verification
 - Replay testing
 - Dummy testing
-- Negative testing
+- Input validation
 - Model reload verification
+- Pipeline consistency checking
+
+Deployment validation verifies software functionality and serialization consistency. It does **not** replace independent field validation or laboratory confirmation.
 
 ---
 
 # Raspberry Pi Deployment
 
-Deployment is provided through:
+The Raspberry Pi implementation is provided through:
 
 ```text
-raspi_predict_excel.py
+src/raspi_predict_excel.py
 ```
 
-The deployment pipeline:
+The deployment workflow:
 
-1. Verify model hash.
-2. Read raw Excel measurement.
+1. Load the trained model.
+2. Read raw Excel measurements.
 3. Perform preprocessing.
-4. Extract 13 features.
-5. Execute PCA transformation.
-6. Run ANN inference.
-7. Export prediction to JSON.
-
----
-
-# Output Files
-
-| File | Description |
-|------|-------------|
-| metrics_summary.csv | Overall evaluation metrics |
-| fold_metrics.csv | Metrics for each CV fold |
-| features_13.csv | Extracted features |
-| pca_scores.csv | PCA scores |
-| pca_loadings.csv | PCA loading matrix |
-| pca_explained_variance.csv | Explained variance |
-| predictions_oof.csv | Out-of-fold predictions |
-| cleaned_rows.csv | Processed sensor rows |
-| excluded_samples.csv | Excluded samples |
-| deployment_tests/ | Deployment validation outputs |
-
----
-
-# Running Unit Tests
-
-```bash
-python -m unittest discover -s tests -v
-```
+4. Extract the 13 engineered features.
+5. Apply PCA transformation.
+6. Execute ANN inference.
+7. Export prediction results.
 
 ---
 
 # Requirements
 
-Python 3.10 is recommended.
+Python **3.10** is recommended.
 
-Install dependencies using:
+Install the required dependencies using:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-For Raspberry Pi:
+For Raspberry Pi deployment:
 
 ```bash
 pip install -r requirements-raspi.txt
@@ -260,16 +222,15 @@ pip install -r requirements-raspi.txt
 
 # Research Notes
 
-This implementation represents the software component of a PCA–ANN formalin detection study using Electronic Nose sensor measurements.
+This repository contains the software implementation developed as part of an academic research project on formalin detection using an Electronic Nose and a PCA–ANN classification approach.
 
 The repository is intended for:
 
+- Software implementation reference
 - Research reproducibility
-- Software validation
 - Deployment demonstration
 - Academic documentation
-
-Deployment validation verifies software functionality and serialization consistency. It does **not** replace independent field validation or laboratory confirmation.
+- Intellectual property (software copyright) support
 
 ---
 
@@ -277,7 +238,9 @@ Deployment validation verifies software functionality and serialization consiste
 
 This repository contains software developed as part of an academic research project.
 
-The source code, trained models, documentation, and associated materials are protected under applicable copyright laws. Unauthorized reproduction, modification, or redistribution outside the applicable license or without the author's permission is prohibited.
+The source code is protected under applicable copyright laws. Research datasets, trained model artifacts, and experimental outputs are maintained separately from this public repository.
+
+Unauthorized reproduction, modification, or redistribution outside the applicable license or without the author's permission is prohibited.
 
 ---
 

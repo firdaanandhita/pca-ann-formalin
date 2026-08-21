@@ -216,3 +216,20 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Generated training outputs
+outputs/
+outputs_all25/
+
+# Deployment validation outputs
+deployment_tests/
+
+# Generated models
+models/
+
+# Generated experiment results
+results/
+
+# Temporary generated files (if created during execution)
+*.bak
+*.tmp

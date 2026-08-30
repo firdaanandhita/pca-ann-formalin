@@ -250,7 +250,7 @@ Unauthorized reproduction, modification, or redistribution outside the applicabl
 
 Research Project:
 
-**PCA–ANN Based Formalin Detection using Electronic Nose**
+**PCA-ANN-Based E-Nose for Formalin Detection in Tofu**
 
 ---
 

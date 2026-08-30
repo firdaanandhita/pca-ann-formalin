@@ -3,7 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
+
+# ``deployment_validation.py`` dipisahkan dari kode produksi agar struktur
+# repository tetap jelas. Tambahkan folder validasi saat entry point ini
+# dijalankan langsung dengan ``python src/train_all25.py``.
+VALIDATION_DIR = Path(__file__).resolve().parents[1] / "validation"
+if str(VALIDATION_DIR) not in sys.path:
+    sys.path.insert(0, str(VALIDATION_DIR))
 
 from deployment_validation import run_validation
 from pca_ann_pipeline import run_pipeline

@@ -225,10 +225,17 @@ outputs_all25/
 deployment_tests/
 
 # Generated models
+model/
 models/
+*.joblib
+*.pkl
 
 # Generated experiment results
 results/
+
+# Research material kept outside the public source repository
+Data Validasi & Pengujian (1).xlsx
+Resume.pdf
 
 # Temporary generated files (if created during execution)
 *.bak

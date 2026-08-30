@@ -42,11 +42,17 @@ pca-ann-formalin/
 ├── src/
 │   ├── pca_ann_pipeline.py
 │   ├── train_all25.py
+│   ├── seed_stability_analysis.py
 │   ├── predict_raw.py
 │   └── raspi_predict_excel.py
 │
 ├── validation/
 │   └── deployment_validation.py
+│
+├── tests/
+│   ├── test_pca_ann_pipeline.py
+│   ├── test_dataset_integration.py
+│   └── test_deployment_artifact.py
 │
 ├── README.md
 ├── requirements.txt
@@ -125,10 +131,11 @@ python3.10 -m venv .venv
 
 # Training
 
-Run the complete training workflow:
+Run the complete training workflow by supplying the research dataset kept
+outside this public repository:
 
 ```bash
-python src/train_all25.py
+python src/train_all25.py --input "path/to/dataset.xlsx" --sheet Data
 ```
 
 The training workflow performs:
@@ -179,6 +186,20 @@ The validation includes:
 - Pipeline consistency checking
 
 Deployment validation verifies software functionality and serialization consistency. It does **not** replace independent field validation or laboratory confirmation.
+
+---
+
+# Automated Tests
+
+From Windows PowerShell:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m unittest discover -s tests -v
+```
+
+Dataset- and artifact-dependent tests are skipped automatically when their
+local research files are not available.
 
 ---
 

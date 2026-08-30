@@ -16,11 +16,18 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
+
+# Memungkinkan validasi dijalankan langsung dari root repository dengan
+# ``python validation/deployment_validation.py``.
+SRC_DIR = Path(__file__).resolve().parents[1] / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 from pca_ann_pipeline import FEATURE_COLUMNS, read_dataset, resolve_columns
 from predict_raw import (
